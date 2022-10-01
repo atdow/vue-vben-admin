@@ -86,6 +86,10 @@ pnpm serve
 pnpm build
 ```
 
+## vscode 插件支持
+
+必须要将`vetur`给禁用掉，会有冲突
+
 ## 更新日志
 
 [CHANGELOG](./CHANGELOG.zh_CN.md)
