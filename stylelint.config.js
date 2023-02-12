@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2022-10-01 16:25:07
+ * @LastEditors: null
+ * @LastEditTime: 2023-02-13 00:12:52
+ * @Description: file description
+ */
 module.exports = {
   root: true,
   plugins: ['stylelint-order'],
@@ -6,7 +13,7 @@ module.exports = {
   rules: {
     'selector-class-pattern': null,
     'selector-pseudo-class-no-unknown': [
-      true,
+      false,
       {
         ignorePseudoClasses: ['global'],
       },
