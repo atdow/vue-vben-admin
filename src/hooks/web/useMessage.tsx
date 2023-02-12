@@ -24,7 +24,8 @@ export declare type IconType = 'success' | 'info' | 'error' | 'warning';
 export interface ModalOptionsEx extends Omit<ModalFuncProps, 'iconType'> {
   iconType: 'warning' | 'success' | 'error' | 'info';
 }
-export type ModalOptionsPartial = Partial<ModalOptionsEx> & Pick<ModalOptionsEx, 'content'>;
+
+export type ModalOptionsPartial = Partial<ModalOptionsEx> & Pick<ModalOptionsEx, 'content'>; // & Pick<ModalOptionsEx, 'content'>是可有可无的操作
 
 interface ConfirmOptions {
   info: ModalFunc;

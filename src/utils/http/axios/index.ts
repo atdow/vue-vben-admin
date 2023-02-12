@@ -167,6 +167,7 @@ const transform: AxiosTransform = {
     const err: string = error?.toString?.() ?? '';
     let errMessage = '';
 
+    // 处理ECONNABORTED、超时和网咯错误的情况
     try {
       if (code === 'ECONNABORTED' && message.indexOf('timeout') !== -1) {
         errMessage = t('sys.api.apiTimeoutMessage');
@@ -187,6 +188,7 @@ const transform: AxiosTransform = {
       throw new Error(error as unknown as string);
     }
 
+    // 特殊状态处理
     checkStatus(error?.response?.status, msg, errorMessageMode);
     return Promise.reject(error);
   },

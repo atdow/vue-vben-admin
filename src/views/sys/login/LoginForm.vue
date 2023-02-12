@@ -48,9 +48,6 @@
       <Button type="primary" size="large" block @click="handleLogin" :loading="loading">
         {{ t('sys.login.loginButton') }}
       </Button>
-      <!-- <Button size="large" class="mt-4 enter-x" block @click="handleRegister">
-        {{ t('sys.login.registerButton') }}
-      </Button> -->
     </FormItem>
     <ARow class="enter-x">
       <ACol :md="8" :xs="24">
@@ -127,7 +124,7 @@
 
   //onKeyStroke('Enter', handleLogin);
 
-  const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
+  const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN); // 默认展示LOGIN
 
   async function handleLogin() {
     const data = await validForm();
@@ -137,7 +134,7 @@
       const userInfo = await userStore.login({
         password: data.password,
         username: data.account,
-        mode: 'none', //不要默认的错误提示
+        mode: 'none', // 不要默认的错误提示
       });
       if (userInfo) {
         notification.success({

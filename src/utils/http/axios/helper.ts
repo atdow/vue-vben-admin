@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2022-10-01 16:25:07
+ * @LastEditors: null
+ * @LastEditTime: 2023-02-12 22:40:56
+ * @Description: file description
+ */
 import { isObject, isString } from '/@/utils/is';
 
 const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -30,6 +37,7 @@ export function formatRequestDate(params: Recordable) {
     if (params[key] && params[key]._isAMomentObject) {
       params[key] = params[key].format(DATE_TIME_FORMAT);
     }
+    // trim处理
     if (isString(key)) {
       const value = params[key];
       if (value) {
@@ -40,6 +48,7 @@ export function formatRequestDate(params: Recordable) {
         }
       }
     }
+    // 递归处理
     if (isObject(params[key])) {
       formatRequestDate(params[key]);
     }

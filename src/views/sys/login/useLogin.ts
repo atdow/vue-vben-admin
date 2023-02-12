@@ -11,8 +11,9 @@ export enum LoginStateEnum {
   QR_CODE,
 }
 
-const currentState = ref(LoginStateEnum.LOGIN);
+const currentState = ref(LoginStateEnum.LOGIN); // 0
 
+// hook的典型共用状态用法
 export function useLoginState() {
   function setLoginState(state: LoginStateEnum) {
     currentState.value = state;
@@ -27,6 +28,7 @@ export function useLoginState() {
   return { setLoginState, getLoginState, handleBackLogin };
 }
 
+// 验证form
 export function useFormValid<T extends Object = any>(formRef: Ref<any>) {
   async function validForm() {
     const form = unref(formRef);
@@ -38,6 +40,7 @@ export function useFormValid<T extends Object = any>(formRef: Ref<any>) {
   return { validForm };
 }
 
+// 获取form验证规则
 export function useFormRules(formData?: Recordable) {
   const { t } = useI18n();
 
