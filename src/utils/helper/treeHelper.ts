@@ -120,18 +120,26 @@ export function findPathAll(tree: any, func: Fn, config: Partial<TreeHelperConfi
   return result;
 }
 
+/**
+ * 递归执行func函数(传进来的过滤器)进行过滤
+ * @param tree
+ * @param func
+ * @param config
+ * @returns
+ */
 export function filter<T = any>(
   tree: T[],
   func: (n: T) => boolean,
   config: Partial<TreeHelperConfig> = {},
 ): T[] {
   config = getConfig(config);
-  const children = config.children as string;
+  const children = config.children as string; // 获取children定义的key
   function listFilter(list: T[]) {
     return list
-      .map((node: any) => ({ ...node }))
+      .map((node: any) => ({ ...node })) // 这行代码貌似没有任何意义
       .filter((node) => {
         node[children] = node[children] && listFilter(node[children]);
+        // 递归执行func函数进行过滤
         return func(node) || (node[children] && node[children].length);
       });
   }

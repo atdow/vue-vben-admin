@@ -102,9 +102,10 @@ export const usePermissionStore = defineStore({
       const appStore = useAppStoreWithOut();
 
       let routes: AppRouteRecordRaw[] = [];
-      const roleList = toRaw(userStore.getRoleList) || [];
+      const roleList = toRaw(userStore.getRoleList) || []; // 对元素修改但不更新ui
       const { permissionMode = projectSetting.permissionMode } = appStore.getProjectConfig;
 
+      // 过滤出符合角色的路由
       const routeFilter = (route: AppRouteRecordRaw) => {
         const { meta } = route;
         const { roles } = meta || {};
@@ -147,7 +148,7 @@ export const usePermissionStore = defineStore({
         }
         return;
       };
-
+      console.log('permissionMode:', permissionMode);
       switch (permissionMode) {
         case PermissionModeEnum.ROLE:
           routes = filter(asyncRoutes, routeFilter);
@@ -157,8 +158,10 @@ export const usePermissionStore = defineStore({
           break;
 
         case PermissionModeEnum.ROUTE_MAPPING:
-          routes = filter(asyncRoutes, routeFilter);
-          routes = routes.filter(routeFilter);
+          console.log('asyncRoutes:', asyncRoutes);
+          routes = filter(asyncRoutes, routeFilter); // 过滤出符合角色的路由
+          // console.log('routes:', routes);
+          routes = routes.filter(routeFilter); // 顶层还要做一次过滤，不知道原因
           const menuList = transformRouteToMenu(routes, true);
           routes = filter(routes, routeRemoveIgnoreFilter);
           routes = routes.filter(routeRemoveIgnoreFilter);
