@@ -15,7 +15,7 @@ export const PAGE_NOT_FOUND_ROUTE: AppRouteRecordRaw = {
   meta: {
     title: 'ErrorPage',
     hideBreadcrumb: true,
-    hideMenu: true,
+    hideMenu: true, // 在menu中隐藏
   },
   children: [
     {

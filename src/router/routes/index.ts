@@ -2,7 +2,7 @@
  * @Author: atdow
  * @Date: 2022-10-01 16:25:07
  * @LastEditors: null
- * @LastEditTime: 2023-02-13 21:45:25
+ * @LastEditTime: 2023-02-15 11:27:55
  * @Description: file description
  */
 import type { AppRouteRecordRaw, AppRouteModule } from '/@/router/types';
@@ -24,7 +24,10 @@ Object.keys(modules).forEach((key) => {
 });
 
 // console.log('routeModuleList:', routeModuleList);
-export const asyncRoutes = [PAGE_NOT_FOUND_ROUTE, ...routeModuleList];
+export const asyncRoutes = [
+  PAGE_NOT_FOUND_ROUTE, // 404 page
+  ...routeModuleList, // modules定义下的所有路由
+];
 
 export const RootRoute: AppRouteRecordRaw = {
   path: '/',

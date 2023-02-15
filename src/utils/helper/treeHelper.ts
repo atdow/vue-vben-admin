@@ -165,9 +165,12 @@ export function forEach<T = any>(
 
 /**
  * @description: Extract tree specified structure
+ * @param treeData
+ * @param opt children: children定义的key
+ * @returns
  */
 export function treeMap<T = any>(treeData: T[], opt: { children?: string; conversion: Fn }): T[] {
-  return treeData.map((item) => treeMapEach(item, opt));
+  return treeData.map((item) => treeMapEach(item, opt)); // 使用map是精髓
 }
 
 /**

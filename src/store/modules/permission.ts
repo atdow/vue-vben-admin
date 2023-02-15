@@ -96,6 +96,7 @@ export const usePermissionStore = defineStore({
       const codeList = await getPermCode();
       this.setPermCodeList(codeList);
     },
+    // 构建路由
     async buildRoutesAction(): Promise<AppRouteRecordRaw[]> {
       const { t } = useI18n();
       const userStore = useUserStore();
@@ -112,7 +113,7 @@ export const usePermissionStore = defineStore({
         if (!roles) return true;
         return roleList.some((role) => roles.includes(role));
       };
-
+      // 过滤ignoreRoute的路由
       const routeRemoveIgnoreFilter = (route: AppRouteRecordRaw) => {
         const { meta } = route;
         const { ignoreRoute } = meta || {};
@@ -121,6 +122,9 @@ export const usePermissionStore = defineStore({
 
       /**
        * @description 根据设置的首页path，修正routes中的affix标记（固定首页）
+       * 符合homePath的路由可能是有redirect的，如果有redirect，
+       * 那么homePath就会被赋值给redirect，
+       * 找到符合redirect的路由并给它的meta属性添加affix为true
        * */
       const patchHomeAffix = (routes: AppRouteRecordRaw[]) => {
         if (!routes || routes.length === 0) return;
@@ -129,7 +133,7 @@ export const usePermissionStore = defineStore({
           if (parentPath) parentPath = parentPath + '/';
           routes.forEach((route: AppRouteRecordRaw) => {
             const { path, children, redirect } = route;
-            const currentPath = path.startsWith('/') ? path : parentPath + path;
+            const currentPath = path.startsWith('/') ? path : parentPath + path; // 拼接成真实path
             if (currentPath === homePath) {
               if (redirect) {
                 homePath = route.redirect! as string;
@@ -156,22 +160,23 @@ export const usePermissionStore = defineStore({
           // Convert multi-level routing to level 2 routing
           routes = flatMultiLevelRoutes(routes);
           break;
-
+        // 默认方式
         case PermissionModeEnum.ROUTE_MAPPING:
-          console.log('asyncRoutes:', asyncRoutes);
+          // console.log('asyncRoutes:', asyncRoutes);
           routes = filter(asyncRoutes, routeFilter); // 过滤出符合角色的路由
           // console.log('routes:', routes);
-          routes = routes.filter(routeFilter); // 顶层还要做一次过滤，不知道原因
-          const menuList = transformRouteToMenu(routes, true);
-          routes = filter(routes, routeRemoveIgnoreFilter);
-          routes = routes.filter(routeRemoveIgnoreFilter);
+          routes = routes.filter(routeFilter); // NOTE 顶层还要做一次过滤，不知道原因
+          const menuList = transformRouteToMenu(routes, true); // routes转menu
+          // console.log('menuList:', menuList);
+          routes = filter(routes, routeRemoveIgnoreFilter); // 过滤被忽略的路由
+          routes = routes.filter(routeRemoveIgnoreFilter); // NOTE 顶层还要做一次过滤，不知道原因
           menuList.sort((a, b) => {
             return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
           });
 
           this.setFrontMenuList(menuList);
           // Convert multi-level routing to level 2 routing
-          routes = flatMultiLevelRoutes(routes);
+          routes = flatMultiLevelRoutes(routes); // 路由结构降级为2层层级结构
           break;
 
         //  If you are sure that you do not need to do background dynamic permissions, please comment the entire judgment below
@@ -209,8 +214,8 @@ export const usePermissionStore = defineStore({
           break;
       }
 
-      routes.push(ERROR_LOG_ROUTE);
-      patchHomeAffix(routes);
+      routes.push(ERROR_LOG_ROUTE); // 拼接错误日志路由
+      patchHomeAffix(routes); // 修正routes中的affix标记（固定首页的标志）
       return routes;
     },
   },

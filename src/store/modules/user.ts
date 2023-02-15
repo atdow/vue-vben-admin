@@ -33,7 +33,7 @@ export const useUserStore = defineStore({
     // token
     token: undefined,
     // roleList
-    roleList: [],
+    roleList: [], // [value]
     // Whether the login expired
     sessionTimeout: false,
     // Last fetch time
@@ -90,12 +90,12 @@ export const useUserStore = defineStore({
     ): Promise<GetUserInfoModel | null> {
       try {
         const { goHome = true, mode, ...loginParams } = params;
-        const data = await loginApi(loginParams, mode);
+        const data = await loginApi(loginParams, mode); // 调用登录接口
         const { token } = data;
 
         // save token
         this.setToken(token);
-        return this.afterLoginAction(goHome);
+        return this.afterLoginAction(goHome); // 登录成功后的调用
       } catch (error) {
         return Promise.reject(error);
       }
@@ -103,38 +103,39 @@ export const useUserStore = defineStore({
     async afterLoginAction(goHome?: boolean): Promise<GetUserInfoModel | null> {
       if (!this.getToken) return null;
       // get user info
-      const userInfo = await this.getUserInfoAction();
+      const userInfo = await this.getUserInfoAction(); // 获取用户信息
 
       const sessionTimeout = this.sessionTimeout;
       if (sessionTimeout) {
-        this.setSessionTimeout(false);
+        this.setSessionTimeout(false); // 如果session过期，则重新设置为不过期
       } else {
         const permissionStore = usePermissionStore();
         // 如果没有加过动态路由
         if (!permissionStore.isDynamicAddedRoute) {
-          const routes = await permissionStore.buildRoutesAction();
+          const routes = await permissionStore.buildRoutesAction(); // 构建路由
+          // 添加权限路由
           routes.forEach((route) => {
             router.addRoute(route as unknown as RouteRecordRaw);
           });
-          router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
+          router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw); // 添加404 page
           permissionStore.setDynamicAddedRoute(true);
         }
-        goHome && (await router.replace(userInfo?.homePath || PageEnum.BASE_HOME));
+        goHome && (await router.replace(userInfo?.homePath || PageEnum.BASE_HOME)); // 跳转首页
       }
       return userInfo;
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null;
-      const userInfo = await getUserInfo();
+      const userInfo = await getUserInfo(); // 获取用户信息
       const { roles = [] } = userInfo;
       if (isArray(roles)) {
-        const roleList = roles.map((item) => item.value) as RoleEnum[];
+        const roleList = roles.map((item) => item.value) as RoleEnum[]; // [value]
         this.setRoleList(roleList);
       } else {
         userInfo.roles = [];
         this.setRoleList([]);
       }
-      this.setUserInfo(userInfo);
+      this.setUserInfo(userInfo); // 设置用户信息
       return userInfo;
     },
     /**

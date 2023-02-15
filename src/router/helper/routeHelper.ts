@@ -94,6 +94,7 @@ export function transformObjToRoute<T = AppRouteModule>(routeList: AppRouteModul
 
 /**
  * Convert multi-level routing to level 2 routing
+ * 将路由结构降级为2层层级结构（将三级及三级以下的路由处理成平级后增加到二级路由中）
  */
 export function flatMultiLevelRoutes(routeModules: AppRouteModule[]) {
   const modules: AppRouteModule[] = cloneDeep(routeModules);
@@ -110,27 +111,30 @@ export function flatMultiLevelRoutes(routeModules: AppRouteModule[]) {
 // Routing level upgrade
 function promoteRouteLevel(routeModule: AppRouteModule) {
   // Use vue-router to splice menus
+  // 利用createRouter的原因是：当使用getRoutes获取的平级路由时的path是已经拼接了父级的path，也就是有效的path
   let router: Router | null = createRouter({
     routes: [routeModule as unknown as RouteRecordNormalized],
-    history: createWebHashHistory(),
+    history: createWebHashHistory(), // 使用了hash路由
   });
 
-  const routes = router.getRoutes();
+  const routes = router.getRoutes(); // 获取当前路由处理成平级后的数据
+  // console.log('routes:', routes);
   addToChildren(routes, routeModule.children || [], routeModule);
   router = null;
 
-  routeModule.children = routeModule.children?.map((item) => omit(item, 'children'));
+  routeModule.children = routeModule.children?.map((item) => omit(item, 'children')); // 删除二级路由下的children，也就是将三级及三级以下的路由
 }
 
 // Add all sub-routes to the secondary route
+// 将三级及三级以下的路由处理成平级后增加到二级路由中
 function addToChildren(
   routes: RouteRecordNormalized[],
   children: AppRouteRecordRaw[],
   routeModule: AppRouteModule,
 ) {
   for (let index = 0; index < children.length; index++) {
-    const child = children[index];
-    const route = routes.find((item) => item.name === child.name);
+    const child = children[index]; // 这里是三级或三级以下的元素
+    const route = routes.find((item) => item.name === child.name); // 子级路由
     if (!route) {
       continue;
     }
@@ -145,7 +149,9 @@ function addToChildren(
 }
 
 // Determine whether the level exceeds 2 levels
+// 检测路由结构是否超过2层层级
 function isMultipleRoute(routeModule: AppRouteModule) {
+  // 没有children的直接就是false
   if (!routeModule || !Reflect.has(routeModule, 'children') || !routeModule.children?.length) {
     return false;
   }
