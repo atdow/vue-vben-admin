@@ -15,12 +15,12 @@ import { createParamMenuGuard } from './paramMenuGuard';
 
 // Don't change the order of creation
 export function setupRouterGuard(router: Router) {
-  createPageGuard(router);
-  createPageLoadingGuard(router);
-  createHttpGuard(router);
-  createScrollGuard(router);
-  createMessageGuard(router);
-  createProgressGuard(router);
+  createPageGuard(router); // 记录page是否已经loaded，同时暴露listenerRouteChange监听路由变化的函数
+  createPageLoadingGuard(router); // 根据配置，选择是否维护PageLoading的状态
+  createHttpGuard(router); // 根据配置，选择是否移除之前的所有请求
+  createScrollGuard(router); // 每次路由变化时手动调用回到顶部
+  createMessageGuard(router); // 根据配置，选择是否清除所有message通知(Modal、notification)
+  createProgressGuard(router); // 根据配置，选择是否维护顶部顶部进度条状态
   createPermissionGuard(router);
   createParamMenuGuard(router); // must after createPermissionGuard (menu has been built.)
   createStateGuard(router);
@@ -30,13 +30,13 @@ export function setupRouterGuard(router: Router) {
  * Hooks for handling page state
  */
 function createPageGuard(router: Router) {
-  const loadedPageMap = new Map<string, boolean>();
+  const loadedPageMap = new Map<string, boolean>(); // 记录page是否已经loaded
 
   router.beforeEach(async (to) => {
     // The page has already been loaded, it will be faster to open it again, you don’t need to do loading and other processing
     to.meta.loaded = !!loadedPageMap.get(to.path);
     // Notify routing changes
-    setRouteChange(to);
+    setRouteChange(to); // 通知route发生改变，里面暴露了listenerRouteChange监听路由变化的函数
 
     return true;
   });
@@ -50,11 +50,13 @@ function createPageGuard(router: Router) {
 function createPageLoadingGuard(router: Router) {
   const userStore = useUserStoreWithOut();
   const appStore = useAppStoreWithOut();
-  const { getOpenPageLoading } = useTransitionSetting();
+  const { getOpenPageLoading } = useTransitionSetting(); // 获取是否打开页面的loading状态配置
   router.beforeEach(async (to) => {
+    // 防止请求登录的时候也显示页面loading
     if (!userStore.getToken) {
       return true;
     }
+    // 加载过了就不再显示页面loading
     if (to.meta.loaded) {
       return true;
     }
@@ -83,7 +85,7 @@ function createPageLoadingGuard(router: Router) {
  * @param router
  */
 function createHttpGuard(router: Router) {
-  const { removeAllHttpPending } = projectSetting;
+  const { removeAllHttpPending } = projectSetting; // 获取是否移除所有pending状态配置
   let axiosCanceler: Nullable<AxiosCanceler>;
   if (removeAllHttpPending) {
     axiosCanceler = new AxiosCanceler();
@@ -105,6 +107,7 @@ function createScrollGuard(router: Router) {
 
   router.afterEach(async (to) => {
     // scroll top
+    // hash的时候有缓存，只有hash的时候才需要手动去回到顶部
     isHash((to as RouteLocationNormalized & { href: string })?.href) && body.scrollTo(0, 0);
     return true;
   });
@@ -115,9 +118,10 @@ function createScrollGuard(router: Router) {
  * @param router
  */
 export function createMessageGuard(router: Router) {
-  const { closeMessageOnSwitch } = projectSetting;
+  const { closeMessageOnSwitch } = projectSetting; // 获取是否清除所有message通知配置
 
   router.beforeEach(async () => {
+    // console.log(111);
     try {
       if (closeMessageOnSwitch) {
         Modal.destroyAll();

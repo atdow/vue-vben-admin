@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2022-10-01 16:25:07
+ * @LastEditors: null
+ * @LastEditTime: 2023-02-18 00:25:01
+ * @Description: file description
+ */
 import type { AxiosRequestConfig, Canceler } from 'axios';
 import axios from 'axios';
 import { isFunction } from '/@/utils/is';
@@ -13,7 +20,7 @@ export class AxiosCanceler {
    * @param {Object} config
    */
   addPending(config: AxiosRequestConfig) {
-    this.removePending(config);
+    this.removePending(config); // 如果已经有上一个同样的pending，需要先执行它并移除
     const url = getPendingUrl(config);
     config.cancelToken =
       config.cancelToken ||

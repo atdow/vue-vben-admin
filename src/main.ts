@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2022-10-01 16:25:07
+ * @LastEditors: null
+ * @LastEditTime: 2023-02-17 23:09:05
+ * @Description: file description
+ */
 import '/@/design/index.less';
 import 'virtual:windi-base.css';
 import 'virtual:windi-components.css';
@@ -41,7 +48,7 @@ async function bootstrap() {
   // Configure routing
   setupRouter(app);
 
-  // router-guard
+  // router-guard 路由守卫
   setupRouterGuard(router);
 
   // Register global directive
