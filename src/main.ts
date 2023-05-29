@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2023-02-15 10:38:44
+ * @LastEditors: null
+ * @LastEditTime: 2023-05-29 17:19:41
+ * @Description: file description
+ */
 import '/@/design/index.less';
 import 'virtual:windi-base.css';
 import 'virtual:windi-components.css';
@@ -26,12 +33,14 @@ async function bootstrap() {
   const app = createApp(App);
 
   // Configure store
+  // 使用pinia
   setupStore(app);
 
   // Initialize internal system configuration
+  // 维护全局主题色、菜单栏等全局配置
   initAppConfigStore();
 
-  // Register global components
+  // Register global components 注册全局组件
   registerGlobComp(app);
 
   // Multilingual configuration

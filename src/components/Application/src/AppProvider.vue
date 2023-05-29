@@ -1,3 +1,10 @@
+<!--
+ * @Author: atdow
+ * @Date: 2023-02-15 10:38:44
+ * @LastEditors: null
+ * @LastEditTime: 2023-05-29 16:17:34
+ * @Description: file description
+-->
 <script lang="ts">
   import { defineComponent, toRefs, ref, unref } from 'vue';
   import { createAppProviderContext } from './useAppContext';
@@ -23,7 +30,7 @@
 
       const appStore = useAppStore();
 
-      // Monitor screen breakpoint information changes
+      // Monitor screen breakpoint information changes 监听windows resize事件来改变isMobile
       createBreakpointListen(({ screenMap, sizeEnum, width }) => {
         const lgWidth = screenMap.get(sizeEnum.LG);
         if (lgWidth) {
@@ -34,7 +41,7 @@
 
       const { prefixCls } = toRefs(props);
 
-      // Inject variables into the global
+      // Inject variables into the global 将prefixCls和isMobile provide到全局中
       createAppProviderContext({ prefixCls, isMobile });
 
       /**

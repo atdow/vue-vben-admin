@@ -1,7 +1,7 @@
 import { withInstall } from '/@/utils';
 
 import appLogo from './src/AppLogo.vue';
-import appProvider from './src/AppProvider.vue';
+import appProvider from './src/AppProvider.vue'; // 维护全局上下文和终端响应式设置
 import appSearch from './src/search/AppSearch.vue';
 import appLocalePicker from './src/AppLocalePicker.vue';
 import appDarkModeToggle from './src/AppDarkModeToggle.vue';

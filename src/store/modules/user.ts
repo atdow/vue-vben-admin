@@ -89,7 +89,7 @@ export const useUserStore = defineStore({
       },
     ): Promise<GetUserInfoModel | null> {
       try {
-        const { goHome = true, mode, ...loginParams } = params;
+        const { goHome = true, mode, ...loginParams } = params; // 不传goHome时，默认跳转home
         const data = await loginApi(loginParams, mode); // 调用登录接口
         const { token } = data;
 

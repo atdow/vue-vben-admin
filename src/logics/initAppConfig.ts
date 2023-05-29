@@ -62,7 +62,7 @@ export function initAppConfigStore() {
   localeStore.initLocale();
 
   setTimeout(() => {
-    clearObsoleteStorage();
+    clearObsoleteStorage(); // 清除无用缓存
   }, 16);
 }
 
@@ -71,8 +71,8 @@ export function initAppConfigStore() {
  * This method is used to delete useless keys
  */
 export function clearObsoleteStorage() {
-  const commonPrefix = getCommonStoragePrefix();
-  const shortPrefix = getStorageShortName();
+  const commonPrefix = getCommonStoragePrefix(); // 公共前缀
+  const shortPrefix = getStorageShortName(); // 公共前缀__${pkg.version}
 
   [localStorage, sessionStorage].forEach((item: Storage) => {
     Object.keys(item).forEach((key) => {

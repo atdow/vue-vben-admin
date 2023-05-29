@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2023-02-15 10:38:44
+ * @LastEditors: null
+ * @LastEditTime: 2023-05-29 18:28:42
+ * @Description: file description
+ */
 import type { LocaleType } from '/#/config';
 
 import { set } from 'lodash-es';
@@ -12,9 +19,10 @@ export function setLoadLocalePool(cb: (loadLocalePool: LocaleType[]) => void) {
   cb(loadLocalePool);
 }
 
+// 将文件映射转为标准object对象映射
 export function genMessage(langs: Record<string, Record<string, any>>, prefix = 'lang') {
   const obj: Recordable = {};
-
+  // console.log('langs:', langs);
   Object.keys(langs).forEach((key) => {
     const langFileModule = langs[key].default;
     let fileName = key.replace(`./${prefix}/`, '').replace(/^\.\//, '');
@@ -33,5 +41,6 @@ export function genMessage(langs: Record<string, Record<string, any>>, prefix = 
       }
     }
   });
+  // console.log('obj:', obj);
   return obj;
 }

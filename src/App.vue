@@ -16,5 +16,6 @@
   const { getAntdLocale } = useLocale();
 
   // Listening to page changes and dynamically changing site titles
+  // 监听router和Locale来改变page title
   useTitle();
 </script>
