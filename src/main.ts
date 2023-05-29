@@ -2,7 +2,7 @@
  * @Author: atdow
  * @Date: 2023-02-15 10:38:44
  * @LastEditors: null
- * @LastEditTime: 2023-05-29 17:19:41
+ * @LastEditTime: 2023-05-29 18:43:09
  * @Description: file description
  */
 import '/@/design/index.less';
@@ -50,7 +50,7 @@ async function bootstrap() {
   // Configure routing
   setupRouter(app);
 
-  // router-guard
+  // router-guard 路由守卫
   setupRouterGuard(router);
 
   // Register global directive

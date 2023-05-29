@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2022-10-01 16:25:07
+ * @LastEditors: null
+ * @LastEditTime: 2023-02-17 23:42:19
+ * @Description: file description
+ */
 import type { TransitionSetting } from '/#/config';
 
 import { computed } from 'vue';
@@ -11,6 +18,7 @@ export function useTransitionSetting() {
 
   const getOpenNProgress = computed(() => appStore.getTransitionSetting?.openNProgress);
 
+  // 暴露出去的是响应式的
   const getOpenPageLoading = computed((): boolean => {
     return !!appStore.getTransitionSetting?.openPageLoading;
   });

@@ -1,3 +1,10 @@
+/*
+ * @Author: atdow
+ * @Date: 2022-10-01 16:25:07
+ * @LastEditors: null
+ * @LastEditTime: 2023-02-17 23:21:22
+ * @Description: file description
+ */
 import type { RouteLocationNormalized, RouteRecordNormalized } from 'vue-router';
 import type { App, Plugin } from 'vue';
 
@@ -64,6 +71,11 @@ export function getDynamicProps<T, U>(props: T): Partial<U> {
   return ret as Partial<U>;
 }
 
+/**
+ * 重写route的matched属性，简化属性
+ * @param route
+ * @returns
+ */
 export function getRawRoute(route: RouteLocationNormalized): RouteLocationNormalized {
   if (!route) return route;
   const { matched, ...opt } = route;

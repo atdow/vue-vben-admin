@@ -11,7 +11,7 @@ import { RootRoute } from '/@/router/routes';
 
 const LOGIN_PATH = PageEnum.BASE_LOGIN;
 
-const ROOT_PATH = RootRoute.path;
+const ROOT_PATH = RootRoute.path; // 根路径，也就是/
 
 const whitePathList: PageEnum[] = [LOGIN_PATH];
 
@@ -19,6 +19,7 @@ export function createPermissionGuard(router: Router) {
   const userStore = useUserStoreWithOut();
   const permissionStore = usePermissionStoreWithOut();
   router.beforeEach(async (to, from, next) => {
+    // 进入userInfo.homePath
     if (
       from.path === ROOT_PATH &&
       to.path === PageEnum.BASE_HOME &&
@@ -32,30 +33,37 @@ export function createPermissionGuard(router: Router) {
     const token = userStore.getToken;
 
     // Whitelist can be directly entered
+    // NOTE 这里总觉得有问题，不够严谨
     if (whitePathList.includes(to.path as PageEnum)) {
+      // 如果进入的是登录页并且是已经是登录状态
       if (to.path === LOGIN_PATH && token) {
         const isSessionTimeout = userStore.getSessionTimeout;
         try {
+          // 调用登录后获取权限等处理（如果这里不调用，下面重定向回首页时将会丢失权限路由等信息）
           await userStore.afterLoginAction();
+          // 如果登录状态未过期，则进入根路径，也就是首页；拦截掉不给进入登录页
           if (!isSessionTimeout) {
             next((to.query?.redirect as string) || '/');
             return;
           }
         } catch {}
       }
-      next();
+      next(); // 放开白名单
       return;
     }
 
     // token does not exist
+    // 没有token的情况
     if (!token) {
       // You can access without permission. You need to set the routing meta.ignoreAuth to true
+      // 如果是不需要权限的路由，可以直接进去
       if (to.meta.ignoreAuth) {
         next();
         return;
       }
 
       // redirect login page
+      // 重定向回登录页
       const redirectData: { path: string; replace: boolean; query?: Recordable<string> } = {
         path: LOGIN_PATH,
         replace: true,
